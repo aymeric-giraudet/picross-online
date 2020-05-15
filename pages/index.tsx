@@ -24,8 +24,10 @@ const IndexPage: React.FC<IndexProps> = (props) => (
 );
 
 export const getStaticProps: GetStaticProps = async () => {
+  const url = process.env.MONGO_URL || "mongodb://localhost";
+  console.log(url);
   //@ts-ignore
-  const client = new MongoClient(process.env.MONGO_URL && "mongodb://localhost", {
+  const client = new MongoClient(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
