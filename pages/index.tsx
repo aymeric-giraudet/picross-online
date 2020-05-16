@@ -1,31 +1,24 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
+import Link from "next/link";
 import { MongoClient } from "mongodb";
+import { PicrossProps } from "./picross/[id]";
 
 interface IndexProps {
-  solution: number[][];
+  picrosses: PicrossProps[];
 }
 
 const IndexPage: React.FC<IndexProps> = (props) => (
-  <div className="container mx-auto">
-    <div className="grid-cols-5 inline-grid">
-      {props.solution.map((r) =>
-        r.map((c) => (
-          <div
-            className={
-              c === 0
-                ? "bg-gray-200 border border-black h-12 w-12"
-                : "bg-gray-600 border border-black h-12 w-12"
-            }
-          />
-        ))
-      )}
-    </div>
-  </div>
+  <ul>
+    {props.picrosses.map((p) => (
+      <li>
+        <Link href={`picross/${p.id}`}>{p.name}</Link>
+      </li>
+    ))}
+  </ul>
 );
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const url = process.env.MONGO_URL || "mongodb://localhost";
-  console.log(url);
   //@ts-ignore
   const client = new MongoClient(url, {
     useNewUrlParser: true,
@@ -33,9 +26,15 @@ export const getStaticProps: GetStaticProps = async () => {
   });
   await client.connect();
   const db = client.db("picross");
-  const picross = await db.collection("picross").findOne({});
+  const picrosses = await db.collection("picross").find().toArray();
   return {
-    props: { solution: picross.solution }, // will be passed to the page component as props
+    props: {
+      picrosses: picrosses.map((p) => ({
+        id: p._id.toString(),
+        name: p.name,
+        solution: p.solution,
+      })),
+    }, // will be passed to the page component as props
   };
 };
 
