@@ -11,7 +11,7 @@ const IndexPage: React.FC<IndexProps> = (props) => (
   <ul>
     {props.picrosses.map((p) => (
       <li>
-        <Link href={`picross/${p.id}`}>{p.name}</Link>
+        <Link href="picross/[id]" as={`picross/${p.id}`}>{p.name}</Link>
       </li>
     ))}
   </ul>
