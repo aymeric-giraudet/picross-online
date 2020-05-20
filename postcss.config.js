@@ -3,7 +3,7 @@ const purgecss = [
   {
     content: ["./components/**/*.tsx", "./pages/**/*.tsx"],
     defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
-    whitelist: ['body']
+    whitelist: ['html', 'body']
   },
 ];
 
