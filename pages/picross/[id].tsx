@@ -2,6 +2,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
 import { Hints } from "../../helpers/computeHints";
+import { useState, SetStateAction } from "react";
 
 export interface PicrossProps {
   id: string;
@@ -10,7 +11,25 @@ export interface PicrossProps {
   hints: Hints;
 }
 
+const onTouchStart: (
+  rowId: number,
+  colId: number,
+  setter: React.Dispatch<SetStateAction<boolean[][]>>
+) => React.TouchEventHandler<HTMLDivElement> = (rowId, colId, setter) => _ => {
+  setter((grid) => [
+    ...grid.map((row, rowIdx) =>
+      row.map((c, colIdx) => (rowId === rowIdx && colId === colIdx ? !c : c))
+    ),
+  ]);
+  console.log(rowId, colId);
+};
+
 const Picross: React.FC<PicrossProps> = (props) => {
+  const [grid, setGrid] = useState(
+    Array.from(Array(props.solution.length), (_) =>
+      Array(props.solution[0].length).fill(false)
+    )
+  );
   const router = useRouter();
 
   if (router.isFallback) {
@@ -23,7 +42,9 @@ const Picross: React.FC<PicrossProps> = (props) => {
         {props.hints.cols.map((c, idx) => (
           <div key={idx} className="flex-col w-12 even:bg-gray-200">
             {c.map((n, idx) => (
-              <div key={idx} className="text-center text-3xl">{n}</div>
+              <div key={idx} className="text-center text-3xl">
+                {n}
+              </div>
             ))}
           </div>
         ))}
@@ -31,23 +52,29 @@ const Picross: React.FC<PicrossProps> = (props) => {
       <div className="flex">
         <div className="flex-col">
           {props.hints.rows.map((c, idx) => (
-            <div key={idx} className="flex text-right items-center h-12 even:bg-gray-200">
+            <div
+              key={idx}
+              className="flex text-right items-center h-12 even:bg-gray-200"
+            >
               {c.map((n, idx) => (
-                <div key={idx} className="text-3xl px-1 flex-auto">{n}</div>
+                <div key={idx} className="text-3xl px-1 flex-auto">
+                  {n}
+                </div>
               ))}
             </div>
           ))}
         </div>
         <div className="grid-cols-5 inline-grid">
-          {props.solution.map((r) =>
-            r.map((c, idx) => (
+          {grid.map((r, rowIdx) =>
+            r.map((c, colIdx) => (
               <div
-                key={idx}
+                key={rowIdx + colIdx}
                 className={
-                  c === 0
-                    ? "bg-gray-200 border border-black h-12 w-12"
-                    : "bg-gray-600 border border-black h-12 w-12"
+                  c
+                    ? "bg-gray-600 border border-black h-12 w-12"
+                    : "bg-gray-200 border border-black h-12 w-12"
                 }
+                onTouchStart={onTouchStart(rowIdx, colIdx, setGrid)}
               />
             ))
           )}
