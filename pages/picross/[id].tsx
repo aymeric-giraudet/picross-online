@@ -1,11 +1,13 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
+import { computeHints, Hints } from "../../helpers/computeHints";
 
 export interface PicrossProps {
   id: string;
   name: string;
   solution: number[][];
+  hints: Hints;
 }
 
 const Picross: React.FC<PicrossProps> = (props) => {
@@ -16,18 +18,40 @@ const Picross: React.FC<PicrossProps> = (props) => {
   }
 
   return (
-    <div className="grid-cols-5 inline-grid">
-      {props.solution.map((r) =>
-        r.map((c) => (
-          <div
-            className={
-              c === 0
-                ? "bg-gray-200 border border-black h-12 w-12"
-                : "bg-gray-600 border border-black h-12 w-12"
-            }
-          />
-        ))
-      )}
+    <div className="flex flex-col justify-center items-center">
+      <div className="flex">
+        {props.hints.cols.map((c) => (
+          <div className="flex-col w-12">
+            {c.map((n) => (
+              <div className="text-center">{n}</div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="flex">
+        <div className="flex-col">
+          {props.hints.rows.map((c) => (
+            <div className="flex h-12 items-center">
+              {c.map((n) => (
+                <div className="text-right px-1">{n}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="grid-cols-5 inline-grid">
+          {props.solution.map((r) =>
+            r.map((c) => (
+              <div
+                className={
+                  c === 0
+                    ? "bg-gray-200 border border-black h-12 w-12"
+                    : "bg-gray-600 border border-black h-12 w-12"
+                }
+              />
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -43,6 +67,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   await client.connect();
   const db = client.db("picross");
   const picrosses = await db.collection("picross").find().toArray();
+  for await (const picross of picrosses) {
+    await db.collection("picross").updateOne(
+      { _id: picross._id },
+      { $set: { hints: computeHints(picross.solution) } }
+    );
+    console.log("updated");
+  }
   const paths = picrosses.map((p) => ({ params: { id: p._id.toString() } }));
   return {
     paths,
@@ -66,7 +97,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     //@ts-ignore
     .findOne({ _id: id });
   return {
-    props: { solution: picross.solution }, // will be passed to the page component as props
+    props: { solution: picross.solution, hints: picross.hints }, // will be passed to the page component as props
   };
 };
 
