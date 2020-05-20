@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
-import { computeHints, Hints } from "../../helpers/computeHints";
+import { Hints } from "../../helpers/computeHints";
 
 export interface PicrossProps {
   id: string;
@@ -18,12 +18,12 @@ const Picross: React.FC<PicrossProps> = (props) => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col items-end">
       <div className="flex">
         {props.hints.cols.map((c) => (
-          <div className="flex-col w-12">
+          <div className="flex-col w-12 even:bg-gray-200">
             {c.map((n) => (
-              <div className="text-center">{n}</div>
+              <div className="text-center text-3xl">{n}</div>
             ))}
           </div>
         ))}
@@ -31,9 +31,9 @@ const Picross: React.FC<PicrossProps> = (props) => {
       <div className="flex">
         <div className="flex-col">
           {props.hints.rows.map((c) => (
-            <div className="flex h-12 items-center">
+            <div className="flex text-right h-12 even:bg-gray-200">
               {c.map((n) => (
-                <div className="text-right px-1">{n}</div>
+                <div className="text-3xl px-1 flex-auto">{n}</div>
               ))}
             </div>
           ))}
@@ -67,13 +67,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   await client.connect();
   const db = client.db("picross");
   const picrosses = await db.collection("picross").find().toArray();
-  for await (const picross of picrosses) {
-    await db.collection("picross").updateOne(
-      { _id: picross._id },
-      { $set: { hints: computeHints(picross.solution) } }
-    );
-    console.log("updated");
-  }
   const paths = picrosses.map((p) => ({ params: { id: p._id.toString() } }));
   return {
     paths,
