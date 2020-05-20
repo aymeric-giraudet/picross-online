@@ -25,17 +25,16 @@ const onTouchStart: (
 };
 
 const Picross: React.FC<PicrossProps> = (props) => {
+  const router = useRouter();
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   const [grid, setGrid] = useState(
     Array.from(Array(props.solution.length), (_) =>
       Array(props.solution[0].length).fill(false)
     )
   );
-  const router = useRouter();
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="flex flex-col items-end">
       <div className="flex">
