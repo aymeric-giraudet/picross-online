@@ -11,14 +11,16 @@ interface IndexProps {
 const IndexPage: React.FC<IndexProps> = (props) => (
   <ul>
     {props.picrosses.map((p) => (
-      <li>
-        <Link href="picross/[id]" as={`picross/${p.id}`}>{p.name}</Link>
+      <li key={p.id}>
+        <Link href="picross/[id]" as={`picross/${p.id}`}>
+          <a>{p.name}</a>
+        </Link>
       </li>
     ))}
   </ul>
 );
 
-export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const handler = nextConnect();
   handler.use(middleware);
   //@ts-ignore

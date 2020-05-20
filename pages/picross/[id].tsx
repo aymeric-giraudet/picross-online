@@ -20,28 +20,29 @@ const Picross: React.FC<PicrossProps> = (props) => {
   return (
     <div className="flex flex-col items-end">
       <div className="flex">
-        {props.hints.cols.map((c) => (
-          <div className="flex-col w-12 even:bg-gray-200">
-            {c.map((n) => (
-              <div className="text-center text-3xl">{n}</div>
+        {props.hints.cols.map((c, idx) => (
+          <div key={idx} className="flex-col w-12 even:bg-gray-200">
+            {c.map((n, idx) => (
+              <div key={idx} className="text-center text-3xl">{n}</div>
             ))}
           </div>
         ))}
       </div>
       <div className="flex">
         <div className="flex-col">
-          {props.hints.rows.map((c) => (
-            <div className="flex text-right h-12 even:bg-gray-200">
-              {c.map((n) => (
-                <div className="text-3xl px-1 flex-auto">{n}</div>
+          {props.hints.rows.map((c, idx) => (
+            <div key={idx} className="flex text-right items-center h-12 even:bg-gray-200">
+              {c.map((n, idx) => (
+                <div key={idx} className="text-3xl px-1 flex-auto">{n}</div>
               ))}
             </div>
           ))}
         </div>
         <div className="grid-cols-5 inline-grid">
           {props.solution.map((r) =>
-            r.map((c) => (
+            r.map((c, idx) => (
               <div
+                key={idx}
                 className={
                   c === 0
                     ? "bg-gray-200 border border-black h-12 w-12"
