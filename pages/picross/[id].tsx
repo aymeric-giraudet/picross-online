@@ -2,7 +2,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
 import { Hints } from "../../helpers/computeHints";
-import { useState, SetStateAction } from "react";
+import { useState } from "react";
 
 export interface PicrossProps {
   id: string;
@@ -10,19 +10,6 @@ export interface PicrossProps {
   solution: number[][];
   hints: Hints;
 }
-
-const onTouchStart: (
-  rowId: number,
-  colId: number,
-  setter: React.Dispatch<SetStateAction<boolean[][]>>
-) => React.TouchEventHandler<HTMLDivElement> = (rowId, colId, setter) => _ => {
-  setter((grid) => [
-    ...grid.map((row, rowIdx) =>
-      row.map((c, colIdx) => (rowId === rowIdx && colId === colIdx ? !c : c))
-    ),
-  ]);
-  console.log(rowId, colId);
-};
 
 const Picross: React.FC<PicrossProps> = (props) => {
   const router = useRouter();
@@ -35,6 +22,65 @@ const Picross: React.FC<PicrossProps> = (props) => {
       Array(props.solution[0].length).fill(false)
     )
   );
+  const [touchedCells, setTouchedCells] = useState<
+    Array<{ row: number; col: number }>
+  >([]);
+  const [mode, setMode] = useState("draw");
+  const onTouchStart: (
+    rowId: number,
+    colId: number
+  ) => React.TouchEventHandler<HTMLDivElement> = (rowId, colId) => (_) => {
+    setTouchedCells([{ row: rowId, col: colId }]);
+    const touched = grid[rowId][colId];
+    if (touched) {
+      setGrid((grd) =>
+        grd.map((r, rId) =>
+          r.map((c, cId) => (rowId === rId && colId === cId ? false : c))
+        )
+      );
+      setMode("erase");
+    } else {
+      setGrid((grd) =>
+        grd.map((r, rId) =>
+          r.map((c, cId) => (rowId === rId && colId === cId ? true : c))
+        )
+      );
+      setMode("draw");
+    }
+  };
+  const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (evt) => {
+    const myLocation = evt.changedTouches[0];
+    const realTarget = document.elementFromPoint(
+      myLocation.clientX,
+      myLocation.clientY
+    );
+    if (realTarget) {
+      const rowString = realTarget.getAttribute("data-row");
+      const colString = realTarget.getAttribute("data-col");
+      if (rowString === null || colString === null) return;
+      const row = parseInt(rowString);
+      const col = parseInt(colString);
+      if (
+        touchedCells.findIndex((tc) => tc.row === row && tc.col === col) !== -1
+      )
+        return;
+      const cell = grid[row][col];
+      if (mode === "draw" && cell === false) {
+        setGrid((grd) =>
+          grd.map((r, rId) =>
+            r.map((c, cId) => (row === rId && col === cId ? true : c))
+          )
+        );
+      } else if (mode === "erase" && cell === true) {
+        setGrid((grd) =>
+          grd.map((r, rId) =>
+            r.map((c, cId) => (row === rId && col === cId ? false : c))
+          )
+        );
+      }
+      setTouchedCells((touchaid) => [...touchaid, { row, col }]);
+    }
+  };
   return (
     <div className="flex flex-col items-end">
       <div className="flex">
@@ -63,17 +109,19 @@ const Picross: React.FC<PicrossProps> = (props) => {
             </div>
           ))}
         </div>
-        <div className="grid-cols-5 inline-grid">
+        <div className="grid-cols-5 inline-grid" onTouchMove={onTouchMove}>
           {grid.map((r, rowIdx) =>
             r.map((c, colIdx) => (
               <div
                 key={rowIdx + colIdx}
+                data-row={rowIdx}
+                data-col={colIdx}
+                onTouchStart={onTouchStart(rowIdx, colIdx)}
                 className={
                   c
                     ? "bg-gray-600 border border-black h-12 w-12"
                     : "bg-gray-200 border border-black h-12 w-12"
                 }
-                onTouchStart={onTouchStart(rowIdx, colIdx, setGrid)}
               />
             ))
           )}
