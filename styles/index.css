@@ -6,6 +6,11 @@ body {
 }
 
 @tailwind components;
+
+#menu-toggle:checked + #menu {
+  display: block;
+}
+
 /* purgecss end ignore */
 
 @tailwind utilities;
