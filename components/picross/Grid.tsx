@@ -8,7 +8,9 @@ interface GridProps {
 
 const Grid: React.FC<GridProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, props, initState);
-  const onTouchStart = (rowId: number, colId: number) => () => {
+  //@ts-ignore
+  const onTouchStart = (rowId: number, colId: number) => (evt) => {
+    evt.preventDefault();
     dispatch({ type: "cellStartTouch", row: rowId, col: colId });
   };
   const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (evt) => {
@@ -26,17 +28,31 @@ const Grid: React.FC<GridProps> = (props) => {
       dispatch({ type: "cellMoveTouch", row, col });
     }
   };
+  const reinit = () => {
+    console.log("reinit");
+    dispatch({ type: "reinit" });
+  };
+  const onMouseEnter = (rowId: number, colId: number) => () => {
+    if (state.mode !== "none")
+      dispatch({ type: "cellMoveTouch", row: rowId, col: colId });
+  };
 
   return (
-    <div className="grid-cols-5 inline-grid" onTouchMove={onTouchMove}>
+    <div
+      className="grid-cols-5 inline-grid"
+      onTouchMove={onTouchMove}
+      onTouchEnd={reinit}
+      onMouseUp={reinit}
+    >
       {state.grid.map((r, rowIdx) =>
         r.map((c, colIdx) => (
           <div
             key={rowIdx + colIdx}
             data-row={rowIdx}
             data-col={colIdx}
-            onTouchStart={onTouchStart(rowIdx, colIdx)}
             onMouseDown={onTouchStart(rowIdx, colIdx)}
+            onMouseEnter={onMouseEnter(rowIdx, colIdx)}
+            onTouchStart={onTouchStart(rowIdx, colIdx)}
             className={
               c
                 ? "bg-gray-600 border border-black h-12 w-12"

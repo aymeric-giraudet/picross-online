@@ -1,6 +1,6 @@
 interface GridState {
   grid: boolean[][];
-  mode: "draw" | "erase";
+  mode: "none" | "draw" | "erase";
   touchedCells: Array<{ row: number; col: number }>;
 }
 
@@ -12,7 +12,7 @@ export const initState = ({
   colSize: number;
 }): GridState => ({
   grid: Array.from(Array(colSize), () => Array(rowSize).fill(false)),
-  mode: "draw",
+  mode: "none",
   touchedCells: [],
 });
 
@@ -20,6 +20,12 @@ const reducer = (state: GridState, action: any): GridState => {
   switch (action.type) {
     case "cellStartTouch": {
       const { row, col } = action;
+      if (
+        state.touchedCells.findIndex(
+          (tc) => tc.row === row && tc.col === col
+        ) !== -1
+      )
+        return state;
       return {
         ...state,
         touchedCells: [{ row, col }],
@@ -32,6 +38,9 @@ const reducer = (state: GridState, action: any): GridState => {
       };
     }
     case "cellMoveTouch": {
+      if(state.mode === "none") {
+        return state;
+      }
       const { row, col } = action;
       if (
         state.touchedCells.findIndex(
@@ -48,6 +57,9 @@ const reducer = (state: GridState, action: any): GridState => {
           )
         ),
       };
+    }
+    case "reinit": {
+      return { ...state, touchedCells: [], mode: "none" };
     }
   }
   return state;
