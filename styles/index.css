@@ -2,7 +2,8 @@
 @tailwind base;
 
 body {
-    @apply antialiased bg-gray-200;
+  @apply antialiased bg-gray-200;
+  overscroll-behavior-y: contain;
 }
 
 @tailwind components;
