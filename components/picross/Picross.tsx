@@ -1,5 +1,6 @@
 import { Hints } from "../../helpers/computeHints";
 import Grid from "./Grid";
+import "./Picross.module.css";
 
 interface PicrossProps {
   hints: Hints;
