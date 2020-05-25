@@ -25,6 +25,7 @@ export const [useStore] = create(
         state.grid = Array.from(Array(colSize), () =>
           Array(rowSize).fill("empty")
         );
+        state.success = undefined;
       }),
     startDrawing: (rowIdx, colIdx) =>
       set((state) => {
