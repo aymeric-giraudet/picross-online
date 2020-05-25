@@ -3,6 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
 import { Hints } from "../../helpers/computeHints";
 import Picross from "../../components/picross/Picross";
+import "../../styles/disable-refresh.css";
 
 export interface PicrossProps {
   id: string;
