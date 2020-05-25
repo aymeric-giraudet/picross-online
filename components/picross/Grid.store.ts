@@ -1,5 +1,5 @@
-import { create, SetState, GetState, StoreApi } from "zustand";
-import produce from "immer";
+import { create } from "zustand";
+import immer from "../../helpers/immer";
 
 type CellStatus = "empty" | "filled" | "marked";
 
@@ -7,28 +7,16 @@ interface GridState {
   grid: CellStatus[][];
   mode: "none" | "drawing" | "erasing" | "marking";
   touchedCells: Array<{ row: number; col: number }>;
+  success?: boolean;
   initGrid: (rowSize: number, colSize: number) => void;
   startDrawing: (rowIdx: number, colIdx: number) => void;
   draw: (rowIdx: number, colIdx: number) => void;
   stopDrawing: () => void;
+  validate: (solution: boolean[][]) => void;
 }
 
-type ImmerStateCreator<T> = (
-  set: ImmerSetState<T>,
-  get: GetState<T>,
-  api: StoreApi<T>
-) => T;
-type ImmerSetState<T> = (partial: (state: T) => void) => void;
-
-const immer = (config: ImmerStateCreator<GridState>) => (
-  set: SetState<GridState>,
-  get: GetState<GridState>,
-  api: StoreApi<GridState>
-  //@ts-ignore
-) => config((fn) => set(produce(fn)), get, api);
-
 export const [useStore] = create(
-  immer((set) => ({
+  immer<GridState>((set) => ({
     grid: [],
     touchedCells: [],
     mode: "none",
@@ -61,5 +49,18 @@ export const [useStore] = create(
         state.mode = "none";
         state.touchedCells = [];
       }),
+    validate: (solution) => set((state) => {
+      for(let row = 0; row < solution.length; row++) {
+        for(let col = 0; col < solution[0].length; col++) {
+          const solutionCell = solution[row][col];
+          const gridCell = state.grid[row][col];
+          if((solutionCell && gridCell !== "filled") || (!solutionCell && gridCell === "filled")) {
+            state.success = false;
+            return;
+          }
+        }
+      }
+      state.success = true;
+    })
   }))
 );

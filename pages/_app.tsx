@@ -16,7 +16,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
     </Head>
     <Header />
     <div className="px-4">
-      <div className="max-w-3xl table bg-white rounded-lg mx-auto my-4 p-4">
+      <div className="max-w-3xl table bg-white rounded-lg mx-auto my-4 p-4 text-center">
         <Component {...pageProps} />
       </div>
     </div>

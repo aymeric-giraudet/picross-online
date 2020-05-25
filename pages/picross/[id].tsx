@@ -7,7 +7,7 @@ import Picross from "../../components/picross/Picross";
 export interface PicrossProps {
   id: string;
   name: string;
-  solution: number[][];
+  solution: boolean[][];
   hints: Hints;
 }
 
@@ -16,7 +16,7 @@ const PicrossPage: React.FC<PicrossProps> = (props) => {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  return <Picross hints={props.hints} />;
+  return <Picross hints={props.hints} solution={props.solution} />;
 };
 
 //@ts-ignore
