@@ -12,7 +12,7 @@ const Cell: React.FC<CellProps> = ({ rowIdx, colIdx }) => {
     (state) => [state.startDrawing, state.draw],
     shallow
   );
-  const onTouchStart: React.TouchEventHandler = (evt) => {
+  const onTouchStart: React.TouchEventHandler = () => {
     startDrawing(rowIdx, colIdx);
     draw(rowIdx, colIdx);
   };
