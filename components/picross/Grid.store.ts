@@ -5,15 +5,21 @@ type CellStatus = "empty" | "filled" | "marked";
 
 interface GridState {
   grid: CellStatus[][];
-  mode: "none" | "drawing" | "erasing" | "marking";
+  mode: "none" | "filled" | "empty" | "marked" | "unmark";
   touchedCells: Array<{ row: number; col: number }>;
   success?: boolean;
   initGrid: (rowSize: number, colSize: number) => void;
-  startDrawing: (rowIdx: number, colIdx: number) => void;
+  startDrawing: (rowIdx: number, colIdx: number, clickType: 1 | 3) => void;
   draw: (rowIdx: number, colIdx: number) => void;
   stopDrawing: () => void;
   validate: (solution: boolean[][]) => void;
 }
+
+const leftClickMode: { [key: string]: CellStatus} = {
+  "empty": "filled",
+  "filled": "empty",
+  "marked": "filled"
+};
 
 export const [useStore] = create(
   immer<GridState>((set) => ({
@@ -27,10 +33,15 @@ export const [useStore] = create(
         );
         state.success = undefined;
       }),
-    startDrawing: (rowIdx, colIdx) =>
+    startDrawing: (rowIdx, colIdx, clickType) =>
       set((state) => {
-        state.mode =
-          state.grid[rowIdx][colIdx] === "empty" ? "drawing" : "erasing";
+        const cellValue = state.grid[rowIdx][colIdx];
+        if (clickType === 1) {
+          state.mode = leftClickMode[cellValue];
+        } else {
+          state.mode =
+            state.grid[rowIdx][colIdx] === "marked" ? "unmark" : "marked";
+        }
       }),
     draw: (rowIdx, colIdx) =>
       set((state) => {
@@ -42,26 +53,33 @@ export const [useStore] = create(
         )
           return;
         state.touchedCells.push({ row: rowIdx, col: colIdx });
-        let value: CellStatus = state.mode === "drawing" ? "filled" : "empty";
-        state.grid[rowIdx][colIdx] = value;
+        if(state.mode === "unmark") {
+          state.grid[rowIdx][colIdx] = state.grid[rowIdx][colIdx] === "filled" ? "filled" : "empty";
+          return;
+        }
+        state.grid[rowIdx][colIdx] = state.mode;
       }),
     stopDrawing: () =>
       set((state) => {
         state.mode = "none";
         state.touchedCells = [];
       }),
-    validate: (solution) => set((state) => {
-      for(let row = 0; row < solution.length; row++) {
-        for(let col = 0; col < solution[0].length; col++) {
-          const solutionCell = solution[row][col];
-          const gridCell = state.grid[row][col];
-          if((solutionCell && gridCell !== "filled") || (!solutionCell && gridCell === "filled")) {
-            state.success = false;
-            return;
+    validate: (solution) =>
+      set((state) => {
+        for (let row = 0; row < solution.length; row++) {
+          for (let col = 0; col < solution[0].length; col++) {
+            const solutionCell = solution[row][col];
+            const gridCell = state.grid[row][col];
+            if (
+              (solutionCell && gridCell !== "filled") ||
+              (!solutionCell && gridCell === "filled")
+            ) {
+              state.success = false;
+              return;
+            }
           }
         }
-      }
-      state.success = true;
-    })
+        state.success = true;
+      }),
   }))
 );

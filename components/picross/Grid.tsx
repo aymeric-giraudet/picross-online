@@ -40,6 +40,7 @@ const Grid: React.FC<GridProps> = ({ rowSize, colSize }) => {
       onTouchMove={onTouchMove}
       onTouchEnd={stopDrawing}
       onMouseUp={stopDrawing}
+      onMouseLeave={stopDrawing}
     >
       {grid.map((r, rowIdx) =>
         r.map((_, colIdx) => (

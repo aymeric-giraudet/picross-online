@@ -13,12 +13,12 @@ const Cell: React.FC<CellProps> = ({ rowIdx, colIdx }) => {
     shallow
   );
   const onTouchStart: React.TouchEventHandler = () => {
-    startDrawing(rowIdx, colIdx);
+    startDrawing(rowIdx, colIdx, 1);
     draw(rowIdx, colIdx);
   };
   const onMouseDown: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
-    startDrawing(rowIdx, colIdx);
+    startDrawing(rowIdx, colIdx, evt.nativeEvent.which as 1 | 3);
     draw(rowIdx, colIdx);
   };
   return (
@@ -30,12 +30,13 @@ const Cell: React.FC<CellProps> = ({ rowIdx, colIdx }) => {
       onTouchEnd={(e) => e.preventDefault()}
       onMouseDown={onMouseDown}
       onMouseEnter={() => draw(rowIdx, colIdx)}
-      className={
-        value === "filled"
-          ? "bg-gray-600 border border-black h-12 w-12"
-          : "bg-gray-200 border border-black h-12 w-12"
-      }
-    />
+      onContextMenu={(e) => e.preventDefault()}
+      className={`flex items-center justify-center text-5xl border border-black h-12 w-12 ${
+        value === "filled" ? "bg-gray-600" : "bg-gray-200"
+      }`}
+    >
+      {value === "marked" && "X"}
+    </div>
   );
 };
 export default Cell;
