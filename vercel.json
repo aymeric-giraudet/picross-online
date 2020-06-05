@@ -1,6 +1,6 @@
 {
   "env": {
-    "private_key": "@google-private-key"
+    "PRIVATE_KEY": "@google-private-key"
   },
   "regions": ["bru"],
   "rewrites": [
