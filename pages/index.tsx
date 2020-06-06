@@ -1,7 +1,8 @@
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { PicrossProps } from "./picross/[id]";
-import firebase from "../lib/firebase";
+import nextConnect from "next-connect";
+import middleware from "../middleware/database";
 
 interface IndexProps {
   picrosses: PicrossProps[];
@@ -19,16 +20,22 @@ const IndexPage: React.FC<IndexProps> = (props) => (
   </ul>
 );
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const result = await firebase.collection("picross").get();
-  const picrosses = result.docs.map((p) => ({ id: p.id, data: p.data()}));
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const handler = nextConnect();
+  handler.use(middleware);
+  //@ts-ignore
+  await handler.apply(req, res);
+  //@ts-ignore
+  const picrosses = await req.db.collection("picross").find().toArray();
   return {
     props: {
+      //@ts-ignore
       picrosses: picrosses.map((p) => ({
-        id: p.id,
-        name: p.data.name
+        id: p._id.toString(),
+        name: p.name,
+        solution: p.solution,
       })),
-    }
+    }, // will be passed to the page component as props
   };
 };
 

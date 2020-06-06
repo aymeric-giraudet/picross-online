@@ -1,9 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from "next";
+import { MongoClient, ObjectId } from "mongodb";
 import { useRouter } from "next/dist/client/router";
 import { Hints } from "../../helpers/computeHints";
 import Picross from "../../components/picross/Picross";
-import firebase from "../../lib/firebase";
-import { mapToArray } from "../../helpers/mapToFirebase";
 
 export interface PicrossProps {
   id: string;
@@ -20,9 +19,18 @@ const PicrossPage: React.FC<PicrossProps> = (props) => {
   return <Picross hints={props.hints} solution={props.solution} />;
 };
 
+//@ts-ignore
 export const getStaticPaths: GetStaticPaths = async () => {
-  const result = await firebase.collection("picross").get();
-  const paths = result.docs.map((p) => ({ params: { id: p.id } }));
+  const url = process.env.MONGO_URL || "mongodb://localhost";
+  //@ts-ignore
+  const client = new MongoClient(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await client.connect();
+  const db = client.db("picross");
+  const picrosses = await db.collection("picross").find().toArray();
+  const paths = picrosses.map((p) => ({ params: { id: p._id.toString() } }));
   return {
     paths,
     fallback: true,
@@ -30,14 +38,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const id = ctx.params?.id.toString() as string;
-  const result = await firebase.collection("picross").doc(id).get();
-  const picross = result.data();
-  if (!picross) {
-    return { props: { notFound: true } };
-  }
+  const url = process.env.MONGO_URL || "mongodb://localhost";
+  //@ts-ignore
+  const client = new MongoClient(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await client.connect();
+  const db = client.db("picross");
+  //@ts-ignore
+  const id = new ObjectId(ctx?.params?.id);
+  const picross = await db
+    .collection("picross")
+    //@ts-ignore
+    .findOne({ _id: id });
   return {
-    props: { solution: picross.solution.map(mapToArray), hints: { rows: picross.hints.rows.map(mapToArray), cols: picross.hints.cols.map(mapToArray) } },
+    props: { solution: picross.solution, hints: picross.hints }, // will be passed to the page component as props
   };
 };
 
