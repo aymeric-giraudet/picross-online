@@ -4250,10 +4250,9 @@ neo-async@2.6.1, neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
 
-next-auth@^2.0.0-beta.62:
+"next-auth@git://github.com/aymeric-giraudet/next-auth.git#npm":
   version "2.0.0-beta.62"
-  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-2.0.0-beta.62.tgz#ab07b31078418e98ad5ca94465c6effe3aeeb6a1"
-  integrity sha512-bEbnyBkV3So6jA0DiSvr1O0t/+6GbSAQddaaTrgOLjiGVxnHXEcvW8su6AT0hUW76DaBjS9vWd1NrWWYSvBmHg==
+  resolved "git://github.com/aymeric-giraudet/next-auth.git#95570ee1c5d6b67906fee67e31a9875281c303f2"
   dependencies:
     jsonwebtoken "^8.5.1"
     jwt-decode "^2.2.0"
