@@ -1,4 +1,5 @@
 import Link from "next/link";
+import User from "./User";
 
 const Header: React.FC = () => (
   <>
@@ -50,6 +51,7 @@ const Header: React.FC = () => (
                 </a>
               </Link>
             </li>
+            <User />
           </ul>
         </nav>
       </div>
