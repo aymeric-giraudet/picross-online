@@ -3687,9 +3687,9 @@ js-tokens@^3.0.2:
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
 js-yaml@^3.13.1:
-  version "3.13.1"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
-  integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.0.tgz#a7a34170f26a21bb162424d8adacb4113a69e482"
+  integrity sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
@@ -4252,7 +4252,7 @@ neo-async@2.6.1, neo-async@^2.5.0, neo-async@^2.6.1:
 
 "next-auth@git://github.com/aymeric-giraudet/next-auth.git#npm":
   version "2.0.0-beta.62"
-  resolved "git://github.com/aymeric-giraudet/next-auth.git#95570ee1c5d6b67906fee67e31a9875281c303f2"
+  resolved "git://github.com/aymeric-giraudet/next-auth.git#2617ef643cb0454a6076f5a20bff268b85e1af1a"
   dependencies:
     jsonwebtoken "^8.5.1"
     jwt-decode "^2.2.0"
