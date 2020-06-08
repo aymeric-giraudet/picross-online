@@ -28,7 +28,7 @@ const options = {
       clientSecret: process.env.TWITTER_SECRET,
     }),
   ],
-  database: process.env.MONGO_URL,
+  database: `${process.env.MONGO_URL}/picross`,
   jwt: true,
 };
 
