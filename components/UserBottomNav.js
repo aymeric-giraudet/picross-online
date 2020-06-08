@@ -13,16 +13,13 @@ const UserBottomNav = () => {
     >
       {session ? (
         <img
-          width="25"
-          height="25"
-          className="inline-block mb-1 rounded-full"
+          className="inline-block mb-1 rounded-full h-6 w-6"
           src={session.user.image}
         />
       ) : (
-        <div></div>
+        <i className="text-2xl inline-block mb-1 fas fa-user"></i>
       )}
-      <i width="25" height="25" class="inline-block mb-1 fas fa-camera"></i>
-      <span className="tab tab-whishlist block text-xs">
+      <span className="block text-xs">
         {session && session.user.name}
         {!session && loading && "Loading..."}
         {!session && !loading && "Sign in"}
