@@ -8,6 +8,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@fullhuman/postcss-purgecss": "^2.2.0",
     "immer": "^6.0.8",
     "mongodb": "^3.5.7",

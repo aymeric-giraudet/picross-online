@@ -1,7 +1,10 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
+
 import "../styles/index.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
   <>
@@ -9,10 +12,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
       <title>Picross Online</title>
       <link rel="manifest" href="/manifest.json" />
       <meta name="theme-color" content="#72B340" />
-      <meta
-        name="description"
-        content="Play Picross on any device, any time"
-      />
+      <meta name="description" content="Play Picross on any device, any time" />
     </Head>
     <Header />
     <div className="px-4">
@@ -20,6 +20,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
         <Component {...pageProps} />
       </div>
     </div>
+    <BottomNav />
   </>
 );
 
