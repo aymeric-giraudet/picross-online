@@ -13,9 +13,13 @@ const Grid: React.FC<GridProps> = ({ rowSize, colSize }) => {
     (state) => state.grid,
     (state, newState) => state.length === newState.length
   );
-  const [initGrid, draw, stopDrawing] = useStore((state) => [state.initGrid, state.draw, state.stopDrawing], shallow);
+  const [initGrid, draw, stopDrawing] = useStore(
+    (state) => [state.initGrid, state.draw, state.stopDrawing],
+    shallow
+  );
   useEffect(() => {
     initGrid(rowSize, colSize);
+    return () => initGrid(rowSize, colSize);
   }, [rowSize, colSize]);
 
   const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (evt) => {

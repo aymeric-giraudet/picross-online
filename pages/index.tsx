@@ -1,8 +1,7 @@
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import Link from "next/link";
 import { PicrossProps } from "./picross/[id]";
-import nextConnect from "next-connect";
-import middleware from "../middleware/database";
+import { MongoClient } from "mongodb";
 
 interface IndexProps {
   picrosses: PicrossProps[];
@@ -20,13 +19,16 @@ const IndexPage: React.FC<IndexProps> = (props) => (
   </ul>
 );
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const handler = nextConnect();
-  handler.use(middleware);
+export const getStaticProps: GetStaticProps = async () => {
+  const url = process.env.MONGO_URL || "mongodb://localhost";
   //@ts-ignore
-  await handler.apply(req, res);
-  //@ts-ignore
-  const picrosses = await req.db.collection("picross").find().toArray();
+  const client = new MongoClient(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await client.connect();
+  const db = client.db("picross");
+  const picrosses = await db.collection("picross").find().toArray();
   return {
     props: {
       //@ts-ignore
@@ -35,7 +37,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         name: p.name,
         solution: p.solution,
       })),
-    }, // will be passed to the page component as props
+    },
+    revalidate: 1,
   };
 };
 
