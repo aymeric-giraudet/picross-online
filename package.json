@@ -12,7 +12,7 @@
     "@fullhuman/postcss-purgecss": "^2.2.0",
     "immer": "^6.0.8",
     "mongodb": "^3.5.7",
-    "next": "^9.5.1",
+    "next": "^9.5.4",
     "next-auth": "git://github.com/aymeric-giraudet/next-auth.git#npm",
     "next-connect": "^0.6.6",
     "next-offline": "^5.0.2",
