@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "prisma migrate up --experimental --auto-approve && next build",
+    "build": "prisma migrate up --experimental --auto-approve && prisma generate && next build",
     "start": "next start",
     "type-check": "tsc"
   },
