@@ -1,5 +1,9 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import Adapters from "next-auth/adapters";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const options = {
   site: process.env.SITE || "http://localhost:3000",
@@ -28,7 +32,7 @@ const options = {
       clientSecret: process.env.TWITTER_SECRET,
     }),
   ],
-  database: `${process.env.MONGO_URL}/picross`,
+  adapter: Adapters.Prisma.Adapter({ prisma }),
   jwt: true,
 };
 

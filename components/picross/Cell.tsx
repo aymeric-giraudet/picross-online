@@ -1,5 +1,5 @@
 import { useStore } from "./Grid.store";
-import { shallow } from "zustand/shallow";
+import shallow from "zustand/shallow";
 
 interface CellProps {
   rowIdx: number;

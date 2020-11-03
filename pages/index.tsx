@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { PicrossProps } from "./picross/[id]";
-import { MongoClient } from "mongodb";
+import { PrismaClient } from "@prisma/client";
 
 interface IndexProps {
   picrosses: PicrossProps[];
@@ -20,22 +20,13 @@ const IndexPage: React.FC<IndexProps> = (props) => (
 );
 
 export const getStaticProps: GetStaticProps = async () => {
-  const url = process.env.MONGO_URL || "mongodb://localhost";
-  //@ts-ignore
-  const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await client.connect();
-  const db = client.db("picross");
-  const picrosses = await db.collection("picross").find().toArray();
+  const prisma = new PrismaClient();
+  const picrosses = await prisma.picross.findMany();
   return {
     props: {
-      //@ts-ignore
-      picrosses: picrosses.map((p) => ({
-        id: p._id.toString(),
-        name: p.name,
-        solution: p.solution,
+      picrosses: picrosses.map((picross) => ({
+        id: picross.id,
+        name: picross.name,
       })),
     },
     revalidate: 1,

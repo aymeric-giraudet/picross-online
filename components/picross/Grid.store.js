@@ -1,28 +1,14 @@
-import { create } from "zustand";
+import create from "zustand";
 import immer from "../../helpers/immer";
 
-type CellStatus = "empty" | "filled" | "marked";
-
-interface GridState {
-  grid: CellStatus[][];
-  mode: "none" | "filled" | "empty" | "marked" | "unmark";
-  touchedCells: Array<{ row: number; col: number }>;
-  success?: boolean;
-  initGrid: (rowSize: number, colSize: number) => void;
-  startDrawing: (rowIdx: number, colIdx: number, clickType: 1 | 3) => void;
-  draw: (rowIdx: number, colIdx: number) => void;
-  stopDrawing: () => void;
-  validate: (solution: boolean[][]) => void;
-}
-
-const leftClickMode: { [key: string]: CellStatus} = {
-  "empty": "filled",
-  "filled": "empty",
-  "marked": "filled"
+const leftClickMode = {
+  empty: "filled",
+  filled: "empty",
+  marked: "filled",
 };
 
-export const [useStore] = create(
-  immer<GridState>((set) => ({
+export const useStore = create(
+  immer((set) => ({
     grid: [],
     touchedCells: [],
     mode: "none",
@@ -53,8 +39,9 @@ export const [useStore] = create(
         )
           return;
         state.touchedCells.push({ row: rowIdx, col: colIdx });
-        if(state.mode === "unmark") {
-          state.grid[rowIdx][colIdx] = state.grid[rowIdx][colIdx] === "filled" ? "filled" : "empty";
+        if (state.mode === "unmark") {
+          state.grid[rowIdx][colIdx] =
+            state.grid[rowIdx][colIdx] === "filled" ? "filled" : "empty";
           return;
         }
         state.grid[rowIdx][colIdx] = state.mode;

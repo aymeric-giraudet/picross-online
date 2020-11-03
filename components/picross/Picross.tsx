@@ -1,14 +1,18 @@
 import { Hints } from "../../helpers/computeHints";
 import Grid from "./Grid";
-import Validator from "./Validator";
 
 interface PicrossProps {
   hints: Hints;
-  solution: boolean[][];
+  creator: { name: string; image: string };
 }
 
 const Picross: React.FC<PicrossProps> = (props) => (
   <>
+    <img
+      className="inline-block mb-1 rounded-full h-20 w-20"
+      src={props.creator.image}
+    />
+    <span className="block text-s">{props.creator.name}</span>
     <div className="flex flex-col items-end">
       <div className="flex">
         {props.hints.cols.map((c, idx) => (
@@ -42,7 +46,6 @@ const Picross: React.FC<PicrossProps> = (props) => (
         />
       </div>
     </div>
-    <Validator solution={props.solution} />
   </>
 );
 

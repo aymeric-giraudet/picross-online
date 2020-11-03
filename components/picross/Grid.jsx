@@ -3,12 +3,7 @@ import { useStore } from "./Grid.store";
 import { useEffect } from "react";
 import shallow from "zustand/shallow";
 
-interface GridProps {
-  rowSize: number;
-  colSize: number;
-}
-
-const Grid: React.FC<GridProps> = ({ rowSize, colSize }) => {
+const Grid = ({ rowSize, colSize }) => {
   const grid = useStore(
     (state) => state.grid,
     (state, newState) => state.length === newState.length
@@ -22,7 +17,7 @@ const Grid: React.FC<GridProps> = ({ rowSize, colSize }) => {
     return () => initGrid(rowSize, colSize);
   }, [rowSize, colSize]);
 
-  const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (evt) => {
+  const onTouchMove = (evt) => {
     const myLocation = evt.changedTouches[0];
     const realTarget = document.elementFromPoint(
       myLocation.clientX,
@@ -40,7 +35,7 @@ const Grid: React.FC<GridProps> = ({ rowSize, colSize }) => {
 
   return (
     <div
-      className="grid-cols-5 inline-grid"
+      className="grid-cols-5 inline-grid mx-auto"
       onTouchMove={onTouchMove}
       onTouchEnd={stopDrawing}
       onMouseUp={stopDrawing}

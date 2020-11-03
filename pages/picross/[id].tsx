@@ -1,6 +1,6 @@
-import { GetStaticProps, GetStaticPaths } from "next";
-import { MongoClient, ObjectId } from "mongodb";
-import { useRouter } from "next/dist/client/router";
+import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from "next";
+import { useRouter } from "next/router";
+import { PrismaClient } from "@prisma/client";
 import { Hints } from "../../helpers/computeHints";
 import Picross from "../../components/picross/Picross";
 
@@ -9,28 +9,23 @@ export interface PicrossProps {
   name: string;
   solution: boolean[][];
   hints: Hints;
+  creator: { name: string; image: string };
 }
 
-const PicrossPage: React.FC<PicrossProps> = (props) => {
+const PicrossPage: React.FC<PicrossProps> = (
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const router = useRouter();
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  return <Picross hints={props.hints} solution={props.solution} />;
+  return <Picross hints={props.hints} creator={props.creator} />;
 };
 
-//@ts-ignore
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = process.env.MONGO_URL || "mongodb://localhost";
-  //@ts-ignore
-  const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await client.connect();
-  const db = client.db("picross");
-  const picrosses = await db.collection("picross").find().toArray();
-  const paths = picrosses.map((p) => ({ params: { id: p._id.toString() } }));
+  const prisma = new PrismaClient();
+  const picrosses = await prisma.picross.findMany();
+  const paths = picrosses.map((p) => ({ params: { id: p.id.toString() } }));
   return {
     paths,
     fallback: true,
@@ -38,22 +33,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const url = process.env.MONGO_URL || "mongodb://localhost";
-  //@ts-ignore
-  const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  const prisma = new PrismaClient();
+  const id = ctx?.params?.id || "0";
+  if (typeof id !== "string") {
+    return { props: {} };
+  }
+  const picross = await prisma.picross.findOne({
+    where: { id: parseInt(id) },
+    include: { author: true },
   });
-  await client.connect();
-  const db = client.db("picross");
-  //@ts-ignore
-  const id = new ObjectId(ctx?.params?.id);
-  const picross = await db
-    .collection("picross")
-    //@ts-ignore
-    .findOne({ _id: id });
   return {
-    props: { solution: picross.solution, hints: picross.hints }, // will be passed to the page component as props
+    props: {
+      hints: { cols: picross?.cols, rows: picross?.rows },
+      creator: { name: picross?.author.name, image: picross?.author.image },
+    }, // will be passed to the page component as props
   };
 };
 
