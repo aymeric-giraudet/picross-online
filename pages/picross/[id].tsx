@@ -26,6 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const prisma = new PrismaClient();
   const picrosses = await prisma.picross.findMany();
   const paths = picrosses.map((p) => ({ params: { id: p.id.toString() } }));
+  prisma.$disconnect();
   return {
     paths,
     fallback: true,
@@ -42,11 +43,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     where: { id: parseInt(id) },
     include: { author: true },
   });
+  prisma.$disconnect();
   return {
     props: {
       hints: { cols: picross?.cols, rows: picross?.rows },
       creator: { name: picross?.author.name, image: picross?.author.image },
-    }, // will be passed to the page component as props
+    },
   };
 };
 

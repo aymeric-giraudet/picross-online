@@ -24,5 +24,6 @@ export default async function createPicrossHandler(
       ...hints,
     },
   });
+  prisma.$disconnect();
   res.end();
 }

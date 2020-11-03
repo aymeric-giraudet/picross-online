@@ -1,13 +1,12 @@
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import Link from "next/link";
-import { PicrossProps } from "./picross/[id]";
 import { PrismaClient } from "@prisma/client";
 
 interface IndexProps {
-  picrosses: PicrossProps[];
+  picrosses: Array<{ name: string; id: number }>;
 }
 
-const IndexPage: React.FC<IndexProps> = (props) => (
+const IndexPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => (
   <ul>
     {props.picrosses.map((p) => (
       <li key={p.id}>
@@ -19,9 +18,10 @@ const IndexPage: React.FC<IndexProps> = (props) => (
   </ul>
 );
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<IndexProps> = async () => {
   const prisma = new PrismaClient();
   const picrosses = await prisma.picross.findMany();
+  prisma.$disconnect();
   return {
     props: {
       picrosses: picrosses.map((picross) => ({
