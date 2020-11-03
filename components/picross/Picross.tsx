@@ -3,15 +3,17 @@ import Grid from "./Grid";
 
 interface PicrossProps {
   hints: Hints;
-  creator: { name: string; image: string };
+  creator: { name: string | null; image: string | null };
 }
 
 const Picross: React.FC<PicrossProps> = (props) => (
   <>
-    <img
-      className="inline-block mb-1 rounded-full h-20 w-20"
-      src={props.creator.image}
-    />
+    {props.creator.image && (
+      <img
+        className="inline-block mb-1 rounded-full h-20 w-20"
+        src={props.creator.image}
+      />
+    )}
     <span className="block text-s">{props.creator.name}</span>
     <div className="flex flex-col items-end">
       <div className="flex">

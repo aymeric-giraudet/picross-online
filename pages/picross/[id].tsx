@@ -5,11 +5,8 @@ import { Hints } from "../../helpers/computeHints";
 import Picross from "../../components/picross/Picross";
 
 export interface PicrossProps {
-  id: string;
-  name: string;
-  solution: boolean[][];
   hints: Hints;
-  creator: { name: string; image: string };
+  creator: { name: string | null; image: string | null };
 }
 
 const PicrossPage: React.FC<PicrossProps> = (
@@ -33,21 +30,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps<PicrossProps> = async (ctx) => {
   const prisma = new PrismaClient();
-  const id = ctx?.params?.id || "0";
-  if (typeof id !== "string") {
-    return { props: {} };
-  }
+  const id = ctx?.params?.id as string;
   const picross = await prisma.picross.findOne({
     where: { id: parseInt(id) },
     include: { author: true },
   });
+  if (!picross) {
+    return {
+      notFound: true,
+    };
+  }
   prisma.$disconnect();
   return {
     props: {
-      hints: { cols: picross?.cols, rows: picross?.rows },
-      creator: { name: picross?.author.name, image: picross?.author.image },
+      hints: {
+        cols: picross.cols as number[][],
+        rows: picross.rows as number[][],
+      },
+      creator: { name: picross.author.name, image: picross.author.image },
     },
   };
 };
