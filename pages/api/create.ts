@@ -17,7 +17,7 @@ export default async function createPicrossHandler(
   const session = await getSession({ req });
   const solution = body.grid.map((row) => row.map((cell) => cell === "filled"));
   const hints = computeHints(solution);
-  await prisma.picross.create({
+  const createdPicross = await prisma.picross.create({
     data: {
       name: body.name,
       author: { connect: { email: session?.user.email } },
@@ -25,5 +25,5 @@ export default async function createPicrossHandler(
     },
   });
   prisma.$disconnect();
-  res.end();
+  res.end(createdPicross.id);
 }

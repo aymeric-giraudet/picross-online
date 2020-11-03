@@ -22,7 +22,7 @@ const PicrossPage: React.FC<PicrossProps> = (
 export const getStaticPaths: GetStaticPaths = async () => {
   const prisma = new PrismaClient();
   const picrosses = await prisma.picross.findMany();
-  const paths = picrosses.map((p) => ({ params: { id: p.id.toString() } }));
+  const paths = picrosses.map((p) => ({ params: { id: p.id } }));
   prisma.$disconnect();
   return {
     paths,
@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps<PicrossProps> = async (ctx) => {
   const prisma = new PrismaClient();
   const id = ctx?.params?.id as string;
   const picross = await prisma.picross.findOne({
-    where: { id: parseInt(id) },
+    where: { id },
     include: { author: true },
   });
   if (!picross) {

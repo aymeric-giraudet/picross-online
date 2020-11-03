@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PrismaClient } from "@prisma/client";
 
 interface IndexProps {
-  picrosses: Array<{ name: string; id: number }>;
+  picrosses: Array<{ name: string; id: string }>;
 }
 
 const IndexPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => (

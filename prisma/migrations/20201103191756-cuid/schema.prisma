@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -11,13 +11,13 @@ generator client {
 }
 
 model Picross {
-  id        String   @default(cuid()) @id
+  id String @default(cuid()) @id
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  name      String
-  rows      Json
-  cols      Json
-  author    User @relation(fields: [authorId], references: [id])
+  name String
+  rows Json
+  cols Json
+  author User @relation(fields: [authorId], references: [id])
   authorId  Int
 }
 

@@ -1,5 +1,4 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
   "prisma.plugin.nextjs.addTypesOnSave": true,
   "prisma.plugin.nextjs.hasPrompted": true
 }
