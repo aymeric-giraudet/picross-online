@@ -1,5 +1,5 @@
 {
-  "regions": ["bru"],
+  "regions": ["dub1"],
   "rewrites": [
     {
       "source": "/service-worker.js",
