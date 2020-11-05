@@ -1,13 +1,15 @@
 import Link from "next/link";
 import User from "./User";
-// import picross from "./Picross.svg";
+import Image from "next/image";
 
 const Header: React.FC = () => (
   <>
     <header className="lg:px-16 px-6 bg-white flex flex-wrap items-center lg:py-0 py-2">
       <div className="flex-1 inline-flex items-center">
         <Link href="/">
-          <a>{/* <img src={picross} width={32} height={32} /> */}</a>
+          <a>
+            <Image src="/Picross.svg" height={36} width={36} />
+          </a>
         </Link>
         <Link href="/">
           <a className="font-semibold text-xl tracking-tight px-4">
