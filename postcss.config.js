@@ -7,6 +7,7 @@ const purgecss = [
       "./pages/**/*.tsx",
       ".pages/**/*.jsx",
     ],
+    whitelistPatternsChildren: [/nprogress$/],
     defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
   },
 ];

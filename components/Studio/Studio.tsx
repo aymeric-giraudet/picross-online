@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Grid from "../picross/Grid";
 import { useStore } from "../picross/Grid.store";
 
@@ -7,8 +7,10 @@ const Studio: React.FC = () => {
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const grid = useStore((state) => state.grid);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   async function onSubmit() {
+    setIsDisabled(true);
     const response = await fetch("/api/create", {
       method: "POST",
       body: JSON.stringify({ name: ref.current?.value, grid }),
@@ -29,6 +31,7 @@ const Studio: React.FC = () => {
         type="button"
         className="block mt-2 mx-auto border rounded bg-gray-300 p-1"
         onClick={onSubmit}
+        disabled={isDisabled}
       >
         Submit
       </button>

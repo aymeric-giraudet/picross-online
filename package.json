@@ -16,6 +16,7 @@
     "next-auth": "^3.1.0",
     "next-connect": "^0.9.1",
     "next-offline": "^5.0.2",
+    "nprogress": "^0.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "zustand": "^3.1.3"
