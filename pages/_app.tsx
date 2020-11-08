@@ -6,8 +6,6 @@ import BottomNav from "../components/BottomNav";
 import { Provider } from "next-auth/client";
 
 import "../styles/index.css";
-import "@fortawesome/fontawesome-free/css/all.css";
-import "nprogress/nprogress.css";
 
 const TopProgressBar = dynamic(
   () => {
@@ -26,7 +24,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
     </Head>
     <TopProgressBar />
     <Header />
-    <main className="max-w-6xl bg-white rounded-lg mx-auto my-4 p-4 text-center">
+    <main className="max-w-6xl flex-1 bg-white rounded-lg mx-auto my-4 p-4 text-center">
       <Component {...pageProps} />
     </main>
     <BottomNav />

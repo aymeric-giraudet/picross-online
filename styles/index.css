@@ -1,9 +1,18 @@
 /* purgecss start ignore */
+
 @tailwind base;
+@import "@fortawesome/fontawesome-free/css/all.css";
+@import "nprogress/nprogress.css";
 
 body {
   @apply antialiased bg-gray-200;
   overscroll-behavior-y: contain;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 @tailwind components;

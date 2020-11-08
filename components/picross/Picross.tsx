@@ -1,5 +1,6 @@
 import { Hints } from "../../helpers/computeHints";
 import Grid from "./Grid";
+import Validator from "./Validator";
 
 interface PicrossProps {
   hints: Hints;
@@ -15,10 +16,13 @@ const Picross: React.FC<PicrossProps> = (props) => (
       />
     )}
     <span className="block text-s">{props.creator.name}</span>
-    <div className="flex flex-col items-end">
-      <div className="flex">
+    <div className="inline-flex flex-col items-end">
+      <div className="inline-flex">
         {props.hints.cols.map((c, idx) => (
-          <div key={idx} className="flex-col w-12 even:bg-gray-200">
+          <div
+            key={idx}
+            className="inline-grid content-end w-12 even:bg-gray-200"
+          >
             {c.map((n, idx) => (
               <div key={idx} className="text-center text-3xl">
                 {n}
@@ -48,6 +52,7 @@ const Picross: React.FC<PicrossProps> = (props) => (
         />
       </div>
     </div>
+    <Validator hints={props.hints} />
   </>
 );
 

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Header: React.FC = () => (
   <>
-    <header className="lg:px-16 px-6 bg-white flex flex-wrap items-center lg:py-0 py-2">
+    <header className="lg:px-16 px-6 top-0 shadow bg-white sticky flex flex-wrap items-center lg:py-0 py-2">
       <div className="flex-1 inline-flex items-center">
         <Link href="/">
           <a>

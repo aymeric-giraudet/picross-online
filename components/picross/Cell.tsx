@@ -4,9 +4,11 @@ import shallow from "zustand/shallow";
 interface CellProps {
   rowIdx: number;
   colIdx: number;
+  rowSize: number;
+  colSize: number;
 }
 
-const Cell: React.FC<CellProps> = ({ rowIdx, colIdx }) => {
+const Cell: React.FC<CellProps> = ({ rowIdx, colIdx, rowSize, colSize }) => {
   const value = useStore((state) => state.grid[rowIdx][colIdx]);
   const [startDrawing, draw] = useStore(
     (state) => [state.startDrawing, state.draw],
@@ -31,7 +33,11 @@ const Cell: React.FC<CellProps> = ({ rowIdx, colIdx }) => {
       onMouseDown={onMouseDown}
       onMouseEnter={() => draw(rowIdx, colIdx)}
       onContextMenu={(e) => e.preventDefault()}
-      className={`flex items-center justify-center text-5xl border border-black h-12 w-12 ${
+      style={{
+        borderRightWidth: colIdx === colSize - 1 || colIdx % 5 === 4 ? 1 : 0,
+        borderBottomWidth: rowIdx === rowSize - 1 || rowIdx % 5 === 4 ? 1 : 0,
+      }}
+      className={`flex items-center justify-center text-5xl border-l border-t border-black h-12 w-12 ${
         value === "filled" ? "bg-gray-600" : "bg-gray-200"
       }`}
     >

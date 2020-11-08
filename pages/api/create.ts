@@ -1,29 +1,30 @@
-import { getSession } from "next-auth/client";
 import { computeHints } from "../../helpers/computeHints";
-import { PrismaClient } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
+import solve from "../../helpers/solve";
+import middleware from "../../middleware";
 
 interface CreatePicrossRequest {
   grid: string[][];
   name: string;
 }
 
-export default async function createPicrossHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const prisma = new PrismaClient();
+const handler = middleware.post(async (req, res) => {
   const body: CreatePicrossRequest = JSON.parse(req.body);
-  const session = await getSession({ req });
   const solution = body.grid.map((row) => row.map((cell) => cell === "filled"));
   const hints = computeHints(solution);
-  const createdPicross = await prisma.picross.create({
+  const solvable = solve(hints);
+  if (!solvable) {
+    res.status(400).end();
+  }
+  const createdPicross = await req.prisma.picross.create({
     data: {
       name: body.name,
-      author: { connect: { email: session?.user.email } },
+      author: { connect: { email: req.session.user.email } },
       ...hints,
+      rowCount: hints.rows.length,
+      colCount: hints.cols.length,
     },
   });
-  prisma.$disconnect();
   res.end(createdPicross.id);
-}
+});
+
+export default handler;

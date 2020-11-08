@@ -14,8 +14,8 @@ export const useStore = create(
     mode: "none",
     initGrid: (rowSize, colSize) =>
       set((state) => {
-        state.grid = Array.from(Array(colSize), () =>
-          Array(rowSize).fill("empty")
+        state.grid = Array.from(Array(rowSize), () =>
+          Array(colSize).fill("empty")
         );
         state.success = undefined;
       }),
@@ -53,7 +53,7 @@ export const useStore = create(
       }),
     validate: (solution) =>
       set((state) => {
-        for (let row = 0; row < solution.length; row++) {
+        for (let row = 0; row < solution[0].length; row++) {
           for (let col = 0; col < solution[0].length; col++) {
             const solutionCell = solution[row][col];
             const gridCell = state.grid[row][col];

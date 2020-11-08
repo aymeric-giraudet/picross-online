@@ -7,7 +7,7 @@ export default function BottomNav() {
   return (
     <section
       id="bottom-navigation"
-      className="block fixed inset-x-0 bottom-0 z-10 bg-white shadow"
+      className="block sticky bottom-0 z-10 bg-white shadow"
     >
       <nav id="tabs" className="flex justify-between">
         <Link href="/">

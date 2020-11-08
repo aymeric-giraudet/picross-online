@@ -6,7 +6,8 @@ import shallow from "zustand/shallow";
 const Grid = ({ rowSize, colSize }) => {
   const grid = useStore(
     (state) => state.grid,
-    (state, newState) => state.length === newState.length
+    (state, newState) =>
+      state.length === newState.length && state[0].length === newState[0].length
   );
   const [initGrid, draw, stopDrawing] = useStore(
     (state) => [state.initGrid, state.draw, state.stopDrawing],
@@ -35,7 +36,8 @@ const Grid = ({ rowSize, colSize }) => {
 
   return (
     <div
-      className="grid-cols-5 inline-grid mx-auto"
+      className="inline-grid mx-auto"
+      style={{ gridTemplateColumns: `repeat(${colSize}, minmax(0, 1fr))` }}
       onTouchMove={onTouchMove}
       onTouchEnd={stopDrawing}
       onMouseUp={stopDrawing}
@@ -43,7 +45,13 @@ const Grid = ({ rowSize, colSize }) => {
     >
       {grid.map((r, rowIdx) =>
         r.map((_, colIdx) => (
-          <Cell key={rowIdx + colIdx} rowIdx={rowIdx} colIdx={colIdx} />
+          <Cell
+            key={`${rowIdx},${colIdx}`}
+            rowIdx={rowIdx}
+            colIdx={colIdx}
+            rowSize={rowSize}
+            colSize={colSize}
+          />
         ))
       )}
     </div>
